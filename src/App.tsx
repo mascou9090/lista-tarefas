@@ -1,26 +1,46 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import { AddArea } from "./shared/components/AddArea";
+import { Header } from "./shared/components/Header";
+import { List } from "./shared/components/List-Itens";
+import { Item } from "./shared/types";
+import * as C from "./style";
 
-function App() {
+export const App = () => {
+
+  const [list, setList] = useState<Item[]>([]);
+
+
+  const handleClick = (taskName: string) => {
+      
+    const oldItemList: Item = {
+      id:list.length + 1,
+      name:taskName,
+      done: false
+    }
+
+    setList([...list,oldItemList]);
+  };
+
+  const handleBoolean = (done: boolean, index: number) => {
+    
+    const newList = [...list];
+
+    newList.forEach(element => element.id === index ? element.done = !done : null);
+
+    setList(newList);
+  }
+
+  console.log(list)
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <C.Container>
+      <C.GlobalStyle />
+      <C.Area>
+        <Header />
+        <AddArea handleClick={handleClick} />
+        {list?.map((item, index) => (
+          <List key={index} handleBoolean={handleBoolean} item={item} />
+        ))}
+      </C.Area>
+    </C.Container>
   );
-}
-
-export default App;
+};
